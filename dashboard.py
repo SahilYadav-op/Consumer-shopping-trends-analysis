@@ -268,14 +268,14 @@ if page == "Overview":
         fig = px.histogram(df_filtered, x='total_spend', nbins=50, color_discrete_sequence=['#818cf8'],
                           title="Total Spend Distribution", labels={'total_spend': 'Total Spend ($)'})
         fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     with col2:
         fig = px.pie(df_filtered, names='spending_category', title="Spending Category Breakdown",
                      color_discrete_sequence=['#34d399', '#fbbf24', '#f472b6'],
                      hole=0.4)
         fig.update_layout(height=400)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     # Row 2: Channel & Demographics
     col1, col2 = st.columns(2)
@@ -286,14 +286,14 @@ if page == "Overview":
                      color_discrete_sequence=['#818cf8', '#2dd4bf', '#f472b6'],
                      title="Shopping Preference Distribution")
         fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400, showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     with col2:
         fig = px.histogram(df_filtered, x='age', color='gender', nbins=30,
                           color_discrete_sequence=['#818cf8', '#f472b6', '#fbbf24'],
                           title="Age Distribution by Gender", barmode='overlay', opacity=0.7)
         fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -313,7 +313,7 @@ elif page == "EDA Explorer":
                             opacity=0.4, title="Income vs Total Spend",
                             labels={'monthly_income': 'Monthly Income ($)', 'total_spend': 'Total Spend ($)'})
             fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         
         with col2:
             age_spend = df_filtered.groupby('age_group', observed=True)['total_spend'].mean().reset_index()
@@ -322,7 +322,7 @@ elif page == "EDA Explorer":
                         title="Average Spend by Age Group",
                         labels={'age_group': 'Age Group', 'total_spend': 'Avg Total Spend ($)'})
             fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         
         # Correlation heatmap
         corr_cols = ['age', 'monthly_income', 'total_spend', 'monthly_online_orders',
@@ -331,7 +331,7 @@ elif page == "EDA Explorer":
         fig = px.imshow(corr, text_auto='.2f', color_continuous_scale='RdYlBu_r',
                        title="Feature Correlation Heatmap", aspect='auto')
         fig.update_layout(height=500)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     with tab2:
         col1, col2 = st.columns(2)
@@ -342,7 +342,7 @@ elif page == "EDA Explorer":
                         barmode='group', color_discrete_sequence=['#00CEC9', '#FD79A8'],
                         title="Avg Spend by Channel Preference")
             fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         
         with col2:
             fig = px.scatter(df_filtered, x='avg_online_spend', y='avg_store_spend',
@@ -350,7 +350,7 @@ elif page == "EDA Explorer":
                             color_discrete_sequence=['#818cf8', '#2dd4bf', '#f472b6'],
                             title="Online vs Store Spend")
             fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
     
     with tab3:
         col1, col2 = st.columns(2)
@@ -361,7 +361,7 @@ elif page == "EDA Explorer":
                             color_discrete_sequence=['#34d399', '#fbbf24', '#f472b6'],
                             title="Brand Loyalty vs Spend")
             fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         
         with col2:
             fig = px.box(df_filtered, x='spending_category', y='impulse_buying_score',
@@ -369,7 +369,7 @@ elif page == "EDA Explorer":
                         color_discrete_sequence=['#34d399', '#fbbf24', '#f472b6'],
                         title="Impulse Buying by Spending Category")
             fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400, showlegend=False)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -395,14 +395,14 @@ elif page == "Customer Segments":
                         color_discrete_sequence=['#818cf8', '#2dd4bf', '#f472b6', '#fbbf24'],
                         opacity=0.4, title="Customer Segments: Income vs Spend")
         fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     with col2:
         fig = px.scatter(df_filtered, x='engagement_score', y='loyalty_composite', color='segment',
                         color_discrete_sequence=['#818cf8', '#2dd4bf', '#f472b6', '#fbbf24'],
                         opacity=0.4, title="Engagement vs Loyalty by Segment")
         fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     # Segment profiles
     st.subheader("📋 Segment Profiles")
@@ -410,7 +410,7 @@ elif page == "Customer Segments":
                    'engagement_score', 'loyalty_composite', 'digital_affinity', 'price_sensitivity']
     profiles = df_filtered.groupby('segment')[profile_cols].mean().round(2)
     
-    st.dataframe(profiles, use_container_width=True)
+    st.dataframe(profiles, width='stretch')
     
     # Radar chart
     st.subheader("📊 Segment Radar Comparison")
@@ -429,7 +429,7 @@ elif page == "Customer Segments":
         ))
     fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 1])),
                      template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500, title="Normalized Segment Profiles")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -469,7 +469,7 @@ elif page == "Predictions":
                 title="Top 15 Most Important Features",
                 labels={'x': 'Importance', 'y': 'Feature'})
     fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500, showlegend=False)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
     
     # Model metrics
     col1, col2 = st.columns(2)
@@ -496,7 +496,7 @@ elif page == "Predictions":
                        title="Confusion Matrix",
                        labels={'x': 'Predicted', 'y': 'Actual'})
         fig.update_layout(height=400)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
 
 # ═══════════════════════════════════════════════════════════════
