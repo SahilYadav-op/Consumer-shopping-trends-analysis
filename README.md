@@ -253,7 +253,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**Built with ❤️ by Sahil**
+**Built with ❤️ by Sahilgod**
 
 *If you found this project helpful, consider giving it a ⭐!*
 
