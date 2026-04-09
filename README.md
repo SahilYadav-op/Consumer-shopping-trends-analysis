@@ -247,7 +247,7 @@ streamlit run dashboard.py
 
 ## 📝 License
 
-This project is for educational and portfolio purposes.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
