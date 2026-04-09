@@ -231,9 +231,6 @@ streamlit run dashboard.py
 
 ## 📈 Sample Visualizations
 
-<details>
-<summary>Click to expand sample figures</summary>
-
 ### Spending Distribution
 ![Spending Distribution](figures/03_spending_distributions.png)
 
@@ -245,8 +242,6 @@ streamlit run dashboard.py
 
 ### ROC Curves
 ![ROC Curves](figures/12_roc_curves.png)
-
-</details>
 
 ---
 
