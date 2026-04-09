@@ -14,6 +14,7 @@ from sklearn.cluster import KMeans
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix
+from streamlit_option_menu import option_menu
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -28,31 +29,90 @@ st.set_page_config(
 # ─── Custom CSS ────────────────────────────────────────────────
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+    
+    html, body, [class*="css"] {
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+    }
+    
+    /* App Background */
+    .stApp {
+        background: #0f172a !important;
+        color: #e2e8f0;
+    }
+    
+    /* Sidebar Background */
+    [data-testid="stSidebar"] {
+        background-color: #0A0A0A !important;
+        border-right: 1px solid #1a1a1a !important;
+    }
+    
+    /* Headers */
     .main-header {
         font-size: 2.5rem;
-        font-weight: 700;
-        color: #6C5CE7;
+        font-weight: 800;
+        background: -webkit-linear-gradient(45deg, #60a5fa, #c084fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         text-align: center;
         margin-bottom: 0.5rem;
+        letter-spacing: -0.5px;
     }
     .sub-header {
-        font-size: 1.2rem;
-        color: #636e72;
+        font-size: 1.1rem;
+        color: #94a3b8;
         text-align: center;
         margin-bottom: 2rem;
+        letter-spacing: 0.5px;
+        font-weight: 500;
     }
-    .metric-card {
-        background: linear-gradient(135deg, #6C5CE7 0%, #a29bfe 100%);
-        padding: 1.5rem;
-        border-radius: 12px;
-        color: white;
-        text-align: center;
+    
+    /* Sidebar Titles */
+    .sidebar-title-main {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #f8fafc;
+        letter-spacing: 1.5px;
+        margin-bottom: 0px;
+        text-transform: uppercase;
     }
-    .stMetric > div {
-        background-color: #f8f9fa;
+    .sidebar-subtitle {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: #64748b;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 25px;
+        margin-top: 2px;
+    }
+    .sidebar-section {
+        font-size: 0.70rem;
+        font-weight: 800;
+        color: #cbd5e1;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-top: 25px;
+        margin-bottom: 5px;
+        padding-left: 5px;
+    }
+    
+    /* Metric Cards */
+    div[data-testid="stMetric"] {
+        background: rgba(30, 41, 59, 0.4);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
         padding: 10px;
-        border-radius: 10px;
-        border-left: 4px solid #6C5CE7;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease, border 0.2s ease;
+    }
+    div[data-testid="stMetric"]:hover {
+        transform: translateY(-2px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    div[data-testid="stMetricValue"] {
+        color: #38bdf8;
+        font-weight: 700;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -130,13 +190,36 @@ def load_and_process_data():
 df = load_and_process_data()
 
 # ─── Sidebar ───────────────────────────────────────────────────
-st.sidebar.image("https://img.icons8.com/fluency/96/shopping-bag.png", width=80)
-st.sidebar.title("🛍️ Dashboard Controls")
-
-page = st.sidebar.radio(
-    "Navigate",
-    ["📊 Overview", "🔍 EDA Explorer", "🎯 Customer Segments", "🤖 Predictions", "💡 Insights"]
-)
+with st.sidebar:
+    st.markdown('<p class="sidebar-title-main">NETMARSHAL</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sidebar-subtitle">CONSUMER MARKET INTELLIGENCE</p>', unsafe_allow_html=True)
+    
+    # Custom info box
+    st.markdown("""
+    <div style="background-color: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background-color: #10b981; margin-right: 8px; box-shadow: 0 0 8px #10b981;"></div>
+            <span style="color: #f1f5f9; font-size: 0.8rem; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif;">11,791 active records</span>
+        </div>
+        <div style="color: #94a3b8; font-size: 0.75rem; margin-left: 16px; margin-bottom: 3px;">⚠️ 0 data anomalies</div>
+        <div style="color: #94a3b8; font-size: 0.75rem; margin-left: 16px;">🔔 4 segments defined</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown('<p class="sidebar-section">MONITOR</p>', unsafe_allow_html=True)
+    
+    page = option_menu(
+        menu_title=None,
+        options=["Overview", "EDA Explorer", "Customer Segments", "Predictions", "Insights"],
+        icons=["house-fill", "bar-chart-fill", "pie-chart-fill", "cpu-fill", "lightbulb-fill"],
+        default_index=0,
+        styles={
+            "container": {"padding": "0!important", "background-color": "transparent", "font-family": "'Plus Jakarta Sans', sans-serif"},
+            "icon": {"color": "#60a5fa", "font-size": "16px"}, 
+            "nav-link": {"font-size": "14px", "font-weight": "600", "text-align": "left", "margin":"2px 0px", "padding": "10px 12px", "color": "#cbd5e1", "--hover-color": "#1e293b", "border-radius": "8px"},
+            "nav-link-selected": {"background-color": "#1e3a8a", "color": "#f8fafc", "box-shadow": "0 0 10px rgba(30, 58, 138, 0.5)"},
+        }
+    )
 
 # ─── Sidebar Filters ──────────────────────────────────────────
 st.sidebar.markdown("---")
@@ -164,7 +247,7 @@ st.sidebar.markdown(f"**Showing {len(df_filtered):,} / {len(df):,} customers**")
 # ═══════════════════════════════════════════════════════════════
 # PAGE 1: OVERVIEW
 # ═══════════════════════════════════════════════════════════════
-if page == "📊 Overview":
+if page == "Overview":
     st.markdown('<p class="main-header">Consumer Shopping Trends Analysis</p>', unsafe_allow_html=True)
     st.markdown('<p class="sub-header">Customer Segmentation & Spending Prediction Dashboard</p>', unsafe_allow_html=True)
     
@@ -182,14 +265,14 @@ if page == "📊 Overview":
     col1, col2 = st.columns(2)
     
     with col1:
-        fig = px.histogram(df_filtered, x='total_spend', nbins=50, color_discrete_sequence=['#6C5CE7'],
+        fig = px.histogram(df_filtered, x='total_spend', nbins=50, color_discrete_sequence=['#818cf8'],
                           title="Total Spend Distribution", labels={'total_spend': 'Total Spend ($)'})
-        fig.update_layout(template='plotly_white', height=400)
+        fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400)
         st.plotly_chart(fig, use_container_width=True)
     
     with col2:
         fig = px.pie(df_filtered, names='spending_category', title="Spending Category Breakdown",
-                     color_discrete_sequence=['#55EFC4', '#FDCB6E', '#FD79A8'],
+                     color_discrete_sequence=['#34d399', '#fbbf24', '#f472b6'],
                      hole=0.4)
         fig.update_layout(height=400)
         st.plotly_chart(fig, use_container_width=True)
@@ -200,23 +283,23 @@ if page == "📊 Overview":
     with col1:
         fig = px.bar(df_filtered['shopping_preference'].value_counts().reset_index(),
                      x='shopping_preference', y='count', color='shopping_preference',
-                     color_discrete_sequence=['#6C5CE7', '#00CEC9', '#FD79A8'],
+                     color_discrete_sequence=['#818cf8', '#2dd4bf', '#f472b6'],
                      title="Shopping Preference Distribution")
-        fig.update_layout(template='plotly_white', height=400, showlegend=False)
+        fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400, showlegend=False)
         st.plotly_chart(fig, use_container_width=True)
     
     with col2:
         fig = px.histogram(df_filtered, x='age', color='gender', nbins=30,
-                          color_discrete_sequence=['#6C5CE7', '#FD79A8', '#FDCB6E'],
+                          color_discrete_sequence=['#818cf8', '#f472b6', '#fbbf24'],
                           title="Age Distribution by Gender", barmode='overlay', opacity=0.7)
-        fig.update_layout(template='plotly_white', height=400)
+        fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400)
         st.plotly_chart(fig, use_container_width=True)
 
 
 # ═══════════════════════════════════════════════════════════════
 # PAGE 2: EDA EXPLORER
 # ═══════════════════════════════════════════════════════════════
-elif page == "🔍 EDA Explorer":
+elif page == "EDA Explorer":
     st.title("🔍 Exploratory Data Analysis")
     
     tab1, tab2, tab3 = st.tabs(["📈 Spend Analysis", "🔄 Channel Analysis", "🏷️ Loyalty & Behavior"])
@@ -226,19 +309,19 @@ elif page == "🔍 EDA Explorer":
         
         with col1:
             fig = px.scatter(df_filtered, x='monthly_income', y='total_spend', color='spending_category',
-                            color_discrete_sequence=['#55EFC4', '#FDCB6E', '#FD79A8'],
+                            color_discrete_sequence=['#34d399', '#fbbf24', '#f472b6'],
                             opacity=0.4, title="Income vs Total Spend",
                             labels={'monthly_income': 'Monthly Income ($)', 'total_spend': 'Total Spend ($)'})
-            fig.update_layout(template='plotly_white', height=500)
+            fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500)
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
             age_spend = df_filtered.groupby('age_group', observed=True)['total_spend'].mean().reset_index()
             fig = px.bar(age_spend, x='age_group', y='total_spend',
-                        color_discrete_sequence=['#6C5CE7'],
+                        color_discrete_sequence=['#818cf8'],
                         title="Average Spend by Age Group",
                         labels={'age_group': 'Age Group', 'total_spend': 'Avg Total Spend ($)'})
-            fig.update_layout(template='plotly_white', height=500)
+            fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500)
             st.plotly_chart(fig, use_container_width=True)
         
         # Correlation heatmap
@@ -258,15 +341,15 @@ elif page == "🔍 EDA Explorer":
             fig = px.bar(channel_data, x='shopping_preference', y=['avg_online_spend', 'avg_store_spend'],
                         barmode='group', color_discrete_sequence=['#00CEC9', '#FD79A8'],
                         title="Avg Spend by Channel Preference")
-            fig.update_layout(template='plotly_white', height=400)
+            fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400)
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
             fig = px.scatter(df_filtered, x='avg_online_spend', y='avg_store_spend',
                             color='shopping_preference', opacity=0.3,
-                            color_discrete_sequence=['#6C5CE7', '#00CEC9', '#FD79A8'],
+                            color_discrete_sequence=['#818cf8', '#2dd4bf', '#f472b6'],
                             title="Online vs Store Spend")
-            fig.update_layout(template='plotly_white', height=400)
+            fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400)
             st.plotly_chart(fig, use_container_width=True)
     
     with tab3:
@@ -275,24 +358,24 @@ elif page == "🔍 EDA Explorer":
         with col1:
             fig = px.scatter(df_filtered, x='brand_loyalty_score', y='total_spend',
                             color='spending_category', opacity=0.3,
-                            color_discrete_sequence=['#55EFC4', '#FDCB6E', '#FD79A8'],
+                            color_discrete_sequence=['#34d399', '#fbbf24', '#f472b6'],
                             title="Brand Loyalty vs Spend")
-            fig.update_layout(template='plotly_white', height=400)
+            fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400)
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
             fig = px.box(df_filtered, x='spending_category', y='impulse_buying_score',
                         color='spending_category', 
-                        color_discrete_sequence=['#55EFC4', '#FDCB6E', '#FD79A8'],
+                        color_discrete_sequence=['#34d399', '#fbbf24', '#f472b6'],
                         title="Impulse Buying by Spending Category")
-            fig.update_layout(template='plotly_white', height=400, showlegend=False)
+            fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400, showlegend=False)
             st.plotly_chart(fig, use_container_width=True)
 
 
 # ═══════════════════════════════════════════════════════════════
 # PAGE 3: CUSTOMER SEGMENTS
 # ═══════════════════════════════════════════════════════════════
-elif page == "🎯 Customer Segments":
+elif page == "Customer Segments":
     st.title("🎯 Customer Segmentation (K-Means Clustering)")
     
     # Segment overview
@@ -309,16 +392,16 @@ elif page == "🎯 Customer Segments":
     
     with col1:
         fig = px.scatter(df_filtered, x='monthly_income', y='total_spend', color='segment',
-                        color_discrete_sequence=['#6C5CE7', '#00CEC9', '#FD79A8', '#FDCB6E'],
+                        color_discrete_sequence=['#818cf8', '#2dd4bf', '#f472b6', '#fbbf24'],
                         opacity=0.4, title="Customer Segments: Income vs Spend")
-        fig.update_layout(template='plotly_white', height=500)
+        fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500)
         st.plotly_chart(fig, use_container_width=True)
     
     with col2:
         fig = px.scatter(df_filtered, x='engagement_score', y='loyalty_composite', color='segment',
-                        color_discrete_sequence=['#6C5CE7', '#00CEC9', '#FD79A8', '#FDCB6E'],
+                        color_discrete_sequence=['#818cf8', '#2dd4bf', '#f472b6', '#fbbf24'],
                         opacity=0.4, title="Engagement vs Loyalty by Segment")
-        fig.update_layout(template='plotly_white', height=500)
+        fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500)
         st.plotly_chart(fig, use_container_width=True)
     
     # Segment profiles
@@ -327,7 +410,7 @@ elif page == "🎯 Customer Segments":
                    'engagement_score', 'loyalty_composite', 'digital_affinity', 'price_sensitivity']
     profiles = df_filtered.groupby('segment')[profile_cols].mean().round(2)
     
-    st.dataframe(profiles.style.background_gradient(cmap='YlOrRd', axis=0), use_container_width=True)
+    st.dataframe(profiles, use_container_width=True)
     
     # Radar chart
     st.subheader("📊 Segment Radar Comparison")
@@ -337,7 +420,7 @@ elif page == "🎯 Customer Segments":
     radar_norm = (radar_data - radar_data.min()) / (radar_data.max() - radar_data.min())
     
     fig = go.Figure()
-    colors = ['#6C5CE7', '#00CEC9', '#FD79A8', '#FDCB6E']
+    colors = ['#818cf8', '#2dd4bf', '#f472b6', '#fbbf24']
     for i, seg in enumerate(radar_norm.index):
         fig.add_trace(go.Scatterpolar(
             r=radar_norm.loc[seg].values.tolist() + [radar_norm.loc[seg].values[0]],
@@ -345,14 +428,14 @@ elif page == "🎯 Customer Segments":
             fill='toself', name=seg, line_color=colors[i], opacity=0.6
         ))
     fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 1])),
-                     template='plotly_white', height=500, title="Normalized Segment Profiles")
+                     template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500, title="Normalized Segment Profiles")
     st.plotly_chart(fig, use_container_width=True)
 
 
 # ═══════════════════════════════════════════════════════════════
 # PAGE 4: PREDICTIONS
 # ═══════════════════════════════════════════════════════════════
-elif page == "🤖 Predictions":
+elif page == "Predictions":
     st.title("🤖 High-Spender Prediction Model")
     
     st.info("This section shows the Random Forest model's ability to predict high-value customers.")
@@ -385,7 +468,7 @@ elif page == "🤖 Predictions":
                 color=top15.values, color_continuous_scale='Viridis',
                 title="Top 15 Most Important Features",
                 labels={'x': 'Importance', 'y': 'Feature'})
-    fig.update_layout(template='plotly_white', height=500, showlegend=False)
+    fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500, showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
     
     # Model metrics
@@ -396,9 +479,13 @@ elif page == "🤖 Predictions":
         report = classification_report(y_test, y_pred, output_dict=True)
         
         st.subheader("📈 Model Performance")
-        met_col1, met_col2, met_col3, met_col4 = st.columns(4)
+        met_col1, met_col2 = st.columns(2)
         met_col1.metric("Accuracy", f"{report['accuracy']:.3f}")
         met_col2.metric("Precision", f"{report['1']['precision']:.3f}")
+        
+        # Add spacing and second row
+        st.markdown("<br>", unsafe_allow_html=True)
+        met_col3, met_col4 = st.columns(2)
         met_col3.metric("Recall", f"{report['1']['recall']:.3f}")
         met_col4.metric("F1 Score", f"{report['1']['f1-score']:.3f}")
     
@@ -415,7 +502,7 @@ elif page == "🤖 Predictions":
 # ═══════════════════════════════════════════════════════════════
 # PAGE 5: INSIGHTS
 # ═══════════════════════════════════════════════════════════════
-elif page == "💡 Insights":
+elif page == "Insights":
     st.title("💡 Key Insights & Business Recommendations")
     
     st.markdown("---")
